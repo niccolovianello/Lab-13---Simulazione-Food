@@ -44,5 +44,110 @@
 	FROM food_condiment
 	GROUP BY food_code
 	ORDER BY num DESC
+	
+	----------------------------------------------------------------------------------
+
+6. NUMERO CIBI PER TIPO DI PORZIONE
+	SELECT p1.portion_display_name, p2.portion_display_name, COUNT(DISTINCT p1.food_code)
+	FROM portion p1, portion p2
+	WHERE p1.portion_display_name<p2.portion_display_name AND p1.food_code=p2.food_code
+	GROUP BY p1.portion_display_name, p2.portion_display_name
+	
+	----------------------------------------------------------------------------------
+	
+7. NUMERO CONDIMENTI PER portion_code
+	SELECT condiment_portion_code, COUNT(DISTINCT condiment_code)
+	FROM condiment
+	GROUP BY condiment_portion_code
+	
+	----------------------------------------------------------------------------------
+	
+8. NUMERO DI CONDIMENTI PER portion_size
+	SELECT condiment_portion_size, COUNT(DISTINCT condiment_code)
+	FROM condiment
+	GROUP BY condiment_portion_size
+
+
+// Traversal Listener (vedi Metro Paris)
+
+private class EdgeTraversedGraphListener implements TraversalListener<Fermata,DefaultWeightedEdge>{ //inner class
+
+		@Override
+		public void connectedComponentFinished(ConnectedComponentTraversalEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void connectedComponentStarted(ConnectedComponentTraversalEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void edgeTraversed(EdgeTraversalEvent<DefaultWeightedEdge> ev) {
+			
+			Fermata sourceVertex=grafo.getEdgeSource(ev.getEdge());
+			Fermata targetVertex=grafo.getEdgeTarget(ev.getEdge()); 
+			
+			if(!backVisit.containsKey(targetVertex) && backVisit.containsKey(sourceVertex))
+				backVisit.put(targetVertex, sourceVertex);
+						else if(!backVisit.containsKey(sourceVertex) && backVisit.containsKey(targetVertex))
+				backVisit.put(sourceVertex, targetVertex); 
+			
+			
+		}
+
+		@Override
+		public void vertexFinished(VertexTraversalEvent<Fermata> arg0) {
+						
+		}
+
+		@Override
+		public void vertexTraversed(VertexTraversalEvent<Fermata> arg0) {
+						
+		}
+		
+	}
+
+
+
+public List<Fermata> fermateRaggiungibili(Fermata source){
+		List<Fermata> result=new ArrayList<Fermata>();
+		backVisit=new HashMap<>();
+		
+		GraphIterator<Fermata, DefaultWeightedEdge> it= new DepthFirstIterator<>(this.grafo, source);
+		
+		it.addTraversalListener(new Model.EdgeTraversedGraphListener());
+		
+		
+		backVisit.put(source, null); 
+		while(it.hasNext()) {
+			result.add(it.next());
+		}
+		
+	
+		
+		return result;
+	}
+
+
+
+public List<Fermata> percorsoFinoA(Fermata target){
+		if(!backVisit.containsKey(target)) {
+						return null;
+		}
+		List<Fermata> percorso=new LinkedList<Fermata>();
+		
+		Fermata f=target;
+		
+		while(f!=null) {
+		percorso.add(0,f);
+		f=backVisit.get(f);
+		}
+		
+		return percorso; 
+	}
+
 							
 	
