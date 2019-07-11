@@ -1,0 +1,48 @@
+1.	INGREDIENTI CON FOOD COMUNI
+
+	SELECT f1.condiment_code, f2.condiment_code, COUNT(DISTINCT f1.food_code)
+	FROM food_condiment AS f1, food_condiment f2
+	WHERE f1.food_code = f2.food_code AND f1.condiment_code<f2.condiment_code
+	GROUP BY f1.condiment_code, f2.condiment_code
+	
+	----------------------------------------------------------------------------------
+	
+2.	INGREDIENTI CON FOOD COMUNI E CALORIE < ?
+
+	SELECT f1.condiment_code, f2.condiment_code, COUNT(DISTINCT f1.food_code)
+	FROM food_condiment AS f1, food_condiment f2
+	WHERE f1.food_code = f2.food_code AND f1.condiment_code<f2.condiment_code
+		AND f1.condiment_code IN (SELECT condiment_code FROM condiment WHERE condiment_calories < ?)
+		AND f2.condiment_code IN (SELECT condiment_code FROM condiment WHERE condiment_calories < ?)
+	GROUP BY f1.condiment_code, f2.condiment_code
+	
+	----------------------------------------------------------------------------------
+	
+3.	FOOD CON INGREDIENTI COMUNI
+
+	SELECT f1.food_code, f2.food_code, COUNT(DISTINCT f1.condiment_code)
+	FROM food_condiment AS f1, food_condiment AS f2
+	WHERE f1.food_code<f2.food_code AND f1.condiment_code = f2.condiment_code
+	GROUP BY f1.food_code, f2.food_code
+
+	----------------------------------------------------------------------------------
+	
+4.	FOOD CON INGREDIENTI COMUNI E CALORIE < ?
+
+	SELECT f1.food_code, f2.food_code, COUNT(DISTINCT f1.condiment_code)
+	FROM food_condiment AS f1, food_condiment AS f2
+	WHERE f1.food_code<f2.food_code AND f1.condiment_code = f2.condiment_code 
+		AND f1.food_code IN (SELECT food_code FROM portion WHERE calories < ?)
+		AND f2.food_code IN (SELECT food_code FROM portion WHERE calories < ?)
+	GROUP BY f1.food_code, f2.food_code
+	
+	----------------------------------------------------------------------------------
+	
+5. NUMERO DI INGREDIENTI PER FOOD
+
+	SELECT DISTINCT food_code, COUNT(DISTINCT condiment_code) AS num
+	FROM food_condiment
+	GROUP BY food_code
+	ORDER BY num DESC
+							
+	
